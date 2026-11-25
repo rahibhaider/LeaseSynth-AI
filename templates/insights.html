@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}AI Insights — LeaseSynth AI{% endblock %}
+{% block page_title %}AI Insights{% endblock %}
+
+{% block content %}
+
+<div id="emptyState" class="empty-state" hidden>
+  <i class="bi bi-stars"></i>
+  <h2>No dataset yet</h2>
+  <p>Generate a synthetic lease dataset first, then come back to ask questions about it.</p>
+  <a href="{{ url_for('generate_page') }}" class="btn btn-accent">Generate Dataset</a>
+</div>
+
+<div id="insightsBody" hidden>
+
+  {% if not ai_enabled %}
+  <section class="panel notice-panel">
+    <i class="bi bi-info-circle"></i>
+    <div>
+      <h3>AI Insights is disabled</h3>
+      <p>No <code>GROQ_API_KEY</code> is configured, so questions can't be answered right now. Add a key to your <code>.env</code> file and restart the app to enable this page. Dataset statistics below are still real and come straight from your generated data.</p>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="panel">
+    <div class="panel-head"><h3>Ask about your dataset</h3></div>
+    <p class="panel-sub">Answers are generated from your dataset's actual computed statistics — never invented numbers.</p>
+
+    <div class="suggested-questions" id="suggestedQuestions">
+      <button type="button" class="chip-btn">Which property type has the highest average rent?</button>
+      <button type="button" class="chip-btn">Which tenant industry occupies the most properties?</button>
+      <button type="button" class="chip-btn">What is the average lease duration?</button>
+      <button type="button" class="chip-btn">Which location has the highest rental values?</button>
+      <button type="button" class="chip-btn">What patterns exist in rent escalation?</button>
+      <button type="button" class="chip-btn">What percentage of leases are active?</button>
+    </div>
+
+    <form id="insightForm" class="insight-form">
+      <input type="text" id="insightQuestion" placeholder="Ask a question about this dataset…" maxlength="500" {{ 'disabled' if not ai_enabled }}>
+      <button type="submit" class="btn btn-accent" id="askBtn" {{ 'disabled' if not ai_enabled }}><i class="bi bi-send"></i> Ask</button>
+    </form>
+  </section>
+
+  <section class="panel" id="insightThreadPanel" hidden>
+    <div class="panel-head"><h3>Answers</h3></div>
+    <div id="insightThread" class="insight-thread"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h3>Dataset statistics (grounding data)</h3></div>
+    <div class="kpi-ledger kpi-ledger-compact" id="insightKpis"></div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/insights.js') }}"></script>
+{% endblock %}

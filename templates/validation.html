@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Data Validation — LeaseSynth AI{% endblock %}
+{% block page_title %}Data Validation{% endblock %}
+
+{% block topbar_actions %}
+<a href="/api/export/validation-csv" class="btn btn-ghost btn-sm"><i class="bi bi-filetype-csv"></i> Validation Report</a>
+{% endblock %}
+
+{% block content %}
+
+<div id="emptyState" class="empty-state" hidden>
+  <i class="bi bi-shield-check"></i>
+  <h2>No dataset yet</h2>
+  <p>Generate a synthetic lease dataset to see its validation report here.</p>
+  <a href="{{ url_for('generate_page') }}" class="btn btn-accent">Generate Dataset</a>
+</div>
+
+<div id="validationBody" hidden>
+
+  <section class="panel quality-panel">
+    <div class="quality-score">
+      <span class="quality-number mono" id="qualityScore">—</span>
+      <span class="quality-label">Data quality score</span>
+    </div>
+    <div class="kpi-ledger kpi-ledger-compact">
+      <div class="kpi-cell"><span class="kpi-label">Total records</span><span class="kpi-value mono" id="valTotal">—</span></div>
+      <div class="kpi-cell"><span class="kpi-label">Valid</span><span class="kpi-value mono text-success" id="valValid">—</span></div>
+      <div class="kpi-cell"><span class="kpi-label">Invalid</span><span class="kpi-value mono text-danger" id="valInvalid">—</span></div>
+      <div class="kpi-cell"><span class="kpi-label">Duplicates</span><span class="kpi-value mono" id="valDuplicates">—</span></div>
+      <div class="kpi-cell"><span class="kpi-label">Missing values</span><span class="kpi-value mono" id="valMissing">—</span></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h3>Checks performed</h3></div>
+    <div class="checks-grid" id="checksGrid"></div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h3>Validation errors</h3>
+      <span class="muted" id="errorsNote"></span>
+    </div>
+    <div id="noErrorsState" class="inline-empty" hidden>
+      <i class="bi bi-check-circle"></i> No validation errors found in this dataset.
+    </div>
+    <div class="table-scroll">
+      <table class="data-table" id="errorsTable">
+        <thead><tr><th>Row</th><th>Lease ID</th><th>Issues found</th></tr></thead>
+        <tbody id="errorsTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/validation.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}LeaseSynth AI{% endblock %}</title>
+  <meta name="description" content="Generate realistic synthetic commercial lease transaction data for analytics and ML model testing — no confidential data required.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1120'/%3E%3Crect x='7' y='15' width='7' height='10' rx='1' fill='%235468FF'/%3E%3Crect x='16' y='9' width='9' height='16' rx='1' fill='%238B5CF6'/%3E%3C/svg%3E">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{{ 'is-landing' if active_page == 'landing' else 'is-app' }}" data-page="{{ active_page }}">
+
+{% if active_page == 'landing' %}
+
+  {% block landing_content %}{% endblock %}
+
+{% else %}
+
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <a href="{{ url_for('index') }}" class="sidebar-brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" width="30" height="30"><rect x="3" y="15" width="7" height="14" rx="1.5" fill="#5468FF"/><rect x="13" y="7" width="8" height="22" rx="1.5" fill="#8B5CF6"/><rect x="23" y="18" width="6" height="11" rx="1.5" fill="#5468FF" opacity="0.6"/></svg>
+        </span>
+        <span class="brand-text">LeaseSynth<em>AI</em></span>
+      </a>
+
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <a href="{{ url_for('dashboard') }}" class="{{ 'is-active' if active_page == 'dashboard' }}">
+          <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+        </a>
+        <a href="{{ url_for('generate_page') }}" class="{{ 'is-active' if active_page == 'generate' }}">
+          <i class="bi bi-magic"></i><span>Generate Dataset</span>
+        </a>
+        <a href="{{ url_for('dataset_page') }}" class="{{ 'is-active' if active_page == 'dataset' }}">
+          <i class="bi bi-table"></i><span>Generated Dataset</span>
+        </a>
+        <a href="{{ url_for('validation_page') }}" class="{{ 'is-active' if active_page == 'validation' }}">
+          <i class="bi bi-shield-check"></i><span>Data Validation</span>
+        </a>
+        <a href="{{ url_for('insights_page') }}" class="{{ 'is-active' if active_page == 'insights' }}">
+          <i class="bi bi-stars"></i><span>AI Insights</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="synthetic-pill"><i class="bi bi-shield-lock"></i> Synthetic data only</span>
+        <span class="ai-status-pill" id="aiStatusPill">
+          <i class="bi bi-circle-fill"></i> <span id="aiStatusLabel">Checking AI…</span>
+        </span>
+      </div>
+    </aside>
+
+    <button class="sidebar-scrim" id="sidebarScrim" aria-label="Close menu"></button>
+
+    <div class="main-area">
+      <header class="topbar">
+        <button class="icon-btn sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
+          <i class="bi bi-list"></i>
+        </button>
+        <h1 class="topbar-title">{% block page_title %}{% endblock %}</h1>
+        <div class="topbar-right">
+          {% block topbar_actions %}{% endblock %}
+        </div>
+      </header>
+
+      <main class="content">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
+{% endif %}
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

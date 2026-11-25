@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Generated Dataset — LeaseSynth AI{% endblock %}
+{% block page_title %}Generated Dataset{% endblock %}
+
+{% block topbar_actions %}
+<a href="/api/export/csv" class="btn btn-ghost btn-sm" id="downloadCsvBtn"><i class="bi bi-filetype-csv"></i> CSV</a>
+<a href="/api/export/json" class="btn btn-ghost btn-sm" id="downloadJsonBtn"><i class="bi bi-filetype-json"></i> JSON</a>
+{% endblock %}
+
+{% block content %}
+
+<div id="emptyState" class="empty-state" hidden>
+  <i class="bi bi-table"></i>
+  <h2>No dataset yet</h2>
+  <p>Generate a synthetic lease dataset to browse it here.</p>
+  <a href="{{ url_for('generate_page') }}" class="btn btn-accent">Generate Dataset</a>
+</div>
+
+<div id="datasetBody" hidden>
+
+  <section class="panel filter-panel">
+    <div class="filter-row">
+      <input type="search" id="searchInput" placeholder="Search lease ID, tenant, property…" class="search-input">
+      <select id="filterPropertyType"><option value="">All property types</option></select>
+      <select id="filterLocation"><option value="">All locations</option></select>
+      <select id="filterLeaseStatus"><option value="">All statuses</option></select>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h3>Dataset preview</h3>
+      <span class="muted mono" id="resultCount">—</span>
+    </div>
+    <div class="table-scroll">
+      <table class="data-table" id="datasetTable">
+        <thead>
+          <tr>
+            <th>Lease ID</th><th>Property ID</th><th>Tenant ID</th><th>Property Type</th>
+            <th>Location</th><th>Industry</th><th>Size (sqft)</th><th>Start</th><th>End</th>
+            <th>Duration (yrs)</th><th>Freq.</th><th>Monthly Rent</th><th>Annual Rent</th>
+            <th>Rent/sqft</th><th>Deposit</th><th>Lease Type</th><th>Escalation</th>
+            <th>Occupancy</th><th>Renewal</th><th>Maintenance</th><th>Market</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="datasetTableBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination">
+      <button id="prevPageBtn" class="btn btn-ghost btn-sm"><i class="bi bi-chevron-left"></i> Prev</button>
+      <span id="pageIndicator" class="mono">Page 1 of 1</span>
+      <button id="nextPageBtn" class="btn btn-ghost btn-sm">Next <i class="bi bi-chevron-right"></i></button>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/dataset.js') }}"></script>
+{% endblock %}

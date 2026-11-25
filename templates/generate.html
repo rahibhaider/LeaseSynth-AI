@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Generate Dataset — LeaseSynth AI{% endblock %}
+{% block page_title %}Generate Dataset{% endblock %}
+
+{% block content %}
+
+<section class="panel ai-panel">
+  <div class="panel-head">
+    <h3><i class="bi bi-stars"></i> <label for="scenarioInput" class="scenario-label">Describe your scenario</label></h3>
+    {% if not ai_enabled %}
+    <span class="badge-muted" title="Add GROQ_API_KEY to your .env file to enable this">AI disabled — no GROQ_API_KEY configured</span>
+    {% endif %}
+  </div>
+  <p class="panel-sub">Describe the leases you want. AI fills in any missing settings and generates the dataset in one step.</p>
+  <form id="scenarioForm" method="post" action="{{ url_for('api_generate_from_scenario') }}">
+    <textarea id="scenarioInput" name="scenario_description" rows="4" maxlength="2000" required placeholder="Generate 250 office and retail leases in Pune, India, and São Paulo, Brazil, with annual payments and terms of 3 to 5 years." {{ 'disabled' if not ai_enabled }}></textarea>
+    <div id="scenarioError" class="form-error" role="alert" hidden></div>
+    <div class="generate-cta scenario-cta">
+      <button id="scenarioBtn" class="btn btn-accent btn-lg" type="submit" {{ 'disabled' if not ai_enabled }}>
+        <i class="bi bi-magic"></i> Generate with AI
+      </button>
+      <span id="scenarioStatus" class="generate-status" role="status"></span>
+    </div>
+  </form>
+</section>
+
+<details class="manual-settings" {{ 'open' if not ai_enabled }}>
+  <summary class="panel">Configure manually</summary>
+  <form id="generateForm" method="post" action="{{ url_for('api_generate') }}" novalidate>
+
+  <section class="panel">
+    <div class="panel-head"><h3>Number of records</h3></div>
+    <div class="chip-grid" id="recordCountChips">
+      <label class="chip"><input type="radio" name="record_count_choice" value="100"><span>100</span></label>
+      <label class="chip"><input type="radio" name="record_count_choice" value="500"><span>500</span></label>
+      <label class="chip"><input type="radio" name="record_count_choice" value="1000"><span>1,000</span></label>
+      <label class="chip"><input type="radio" name="record_count_choice" value="5000"><span>5,000</span></label>
+      <label class="chip"><input type="radio" name="record_count_choice" value="custom"><span>Custom</span></label>
+    </div>
+    <div id="customRecordCountWrap" class="field-inline" hidden>
+      <label for="customRecordCount">Custom record count</label>
+      <input type="number" id="customRecordCount" min="1" max="20000">
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h3>Property type</h3></div>
+    <div class="chip-grid" id="propertyTypeChips">
+      {% for pt in property_types %}
+      <label class="chip"><input type="checkbox" name="property_types" value="{{ pt }}"><span>{{ pt }}</span></label>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head"><h3>Location</h3></div>
+    <div class="chip-grid chip-grid-wide" id="locationChips">
+      {% for loc in locations %}
+      <label class="chip"><input type="checkbox" name="locations" value="{{ loc }}"><span>{{ loc }}</span></label>
+      {% endfor %}
+    </div>
+    <div class="field-inline">
+      <label for="customLocations">Add custom locations (semicolon-separated — each location already contains a comma)</label>
+      <input type="text" id="customLocations" placeholder="e.g. Portland, OR; Raleigh, NC">
+    </div>
+  </section>
+
+  <div class="panel-row">
+    <section class="panel panel-half">
+      <div class="panel-head"><h3>Lease duration (years)</h3></div>
+      <div class="field-pair">
+        <div><label for="durationMin">Minimum</label><input type="number" id="durationMin" min="1" max="50" value="3"></div>
+        <div><label for="durationMax">Maximum</label><input type="number" id="durationMax" min="1" max="50" value="10"></div>
+      </div>
+    </section>
+    <section class="panel panel-half">
+      <div class="panel-head"><h3>Rent escalation rate (%)</h3></div>
+      <div class="field-pair">
+        <div><label for="escalationMin">Minimum</label><input type="number" id="escalationMin" min="0" max="20" step="0.1" value="2.0"></div>
+        <div><label for="escalationMax">Maximum</label><input type="number" id="escalationMax" min="0" max="20" step="0.1" value="4.0"></div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panel-head"><h3>Tenant industry</h3></div>
+    <div class="chip-grid chip-grid-wide" id="industryChips">
+      {% for ind in tenant_industries %}
+      <label class="chip"><input type="checkbox" name="tenant_industries" value="{{ ind }}"><span>{{ ind }}</span></label>
+      {% endfor %}
+    </div>
+  </section>
+
+  <div class="panel-row">
+    <section class="panel panel-half">
+      <div class="panel-head"><h3>Lease type</h3></div>
+      <div class="chip-grid" id="leaseTypeChips">
+        {% for lt in lease_types %}
+        <label class="chip"><input type="checkbox" name="lease_types" value="{{ lt }}"><span>{{ lt }}</span></label>
+        {% endfor %}
+      </div>
+    </section>
+    <section class="panel panel-half">
+      <div class="panel-head"><h3>Payment frequency</h3></div>
+      <div class="chip-grid" id="paymentFreqChips">
+        {% for pf in payment_frequencies %}
+        <label class="chip"><input type="checkbox" name="payment_frequencies" value="{{ pf }}"><span>{{ pf }}</span></label>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+
+  <div class="panel-row">
+    <section class="panel panel-half">
+      <div class="panel-head"><h3>Occupancy status</h3></div>
+      <div class="chip-grid" id="occupancyChips">
+        {% for occ in occupancy_statuses %}
+        <label class="chip"><input type="checkbox" name="occupancy_statuses" value="{{ occ }}"><span>{{ occ }}</span></label>
+        {% endfor %}
+      </div>
+    </section>
+    <section class="panel panel-half">
+      <div class="panel-head"><h3>Market condition</h3></div>
+      <div class="chip-grid" id="marketConditionChips">
+        {% for mc in market_conditions %}
+        <label class="chip"><input type="checkbox" name="market_conditions" value="{{ mc }}"><span>{{ mc }}</span></label>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+
+  <div id="formError" class="form-error" role="alert" hidden></div>
+
+  <div class="generate-cta">
+    <button type="submit" class="btn btn-accent btn-lg" id="generateBtn">
+      <i class="bi bi-magic"></i> Generate Dataset
+    </button>
+    <span id="generateStatus" class="generate-status" role="status"></span>
+  </div>
+  </form>
+</details>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/generator.js') }}"></script>
+{% endblock %}

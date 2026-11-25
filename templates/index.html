@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}LeaseSynth AI — Synthetic Commercial Lease Data{% endblock %}
+
+{% block landing_content %}
+<div class="landing">
+
+  <nav class="landing-nav">
+    <a href="{{ url_for('index') }}" class="sidebar-brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="28" height="28"><rect x="3" y="15" width="7" height="14" rx="1.5" fill="#5468FF"/><rect x="13" y="7" width="8" height="22" rx="1.5" fill="#8B5CF6"/><rect x="23" y="18" width="6" height="11" rx="1.5" fill="#5468FF" opacity="0.6"/></svg>
+      </span>
+      <span class="brand-text">LeaseSynth<em>AI</em></span>
+    </a>
+    <div class="landing-nav-links">
+      <a href="#why">Why synthetic data</a>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+    </div>
+    <a href="{{ url_for('generate_page') }}" class="btn btn-accent btn-sm">Get Started</a>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-grid-bg" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Commercial real estate · synthetic data</p>
+        <h1>Generate Smarter.<br>Analyze Better.</h1>
+        <p class="hero-sub">
+          Commercial lease agreements carry confidential tenant and financial details,
+          which makes real transaction data scarce and restricted. LeaseSynth AI generates
+          realistic, fully synthetic lease records — so your analytics and ML models get the
+          volume and variety they need, without ever touching a real agreement.
+        </p>
+        <div class="hero-ctas">
+          <a href="{{ url_for('generate_page') }}" class="btn btn-accent btn-lg">Get Started</a>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-ghost btn-lg">See the dashboard</a>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="ledger-preview">
+          <div class="ledger-preview-head">
+            <span>Preview — illustrative, synthetic</span>
+            <span class="dot-group"><i></i><i></i><i></i></span>
+          </div>
+          <table>
+            <thead>
+              <tr><th>Lease ID</th><th>Property</th><th>Monthly Rent</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr class="row-in" style="--d:0"><td class="mono">LS-004218</td><td>Office · Austin, TX</td><td class="mono">$18,420</td><td><span class="status-chip status-active">Active</span></td></tr>
+              <tr class="row-in" style="--d:1"><td class="mono">LS-004219</td><td>Retail · Miami, FL</td><td class="mono">$9,115</td><td><span class="status-chip status-pending">Pending</span></td></tr>
+              <tr class="row-in" style="--d:2"><td class="mono">LS-004220</td><td>Warehouse · Dallas, TX</td><td class="mono">$31,860</td><td><span class="status-chip status-active">Active</span></td></tr>
+              <tr class="row-in" style="--d:3"><td class="mono">LS-004221</td><td>Industrial · Columbus, OH</td><td class="mono">$12,730</td><td><span class="status-chip status-expired">Expired</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="section" id="why">
+    <div class="section-inner narrow">
+      <h2>Real lease data is exactly what you can't use for testing</h2>
+      <p class="section-lede">
+        Rent rolls, abstracts, and lease comps are locked behind confidentiality agreements —
+        for good reason. But analytics and ML teams still need volume: hundreds of lease
+        durations, rent escalations, and tenant mixes to stress-test a model against.
+        LeaseSynth AI closes that gap with data that behaves like a real portfolio, built
+        entirely from configurable statistical rules and generative AI — never from an
+        actual tenant, property, or agreement.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="features">
+    <div class="section-inner">
+      <h2>Everything you need to stand up a test dataset</h2>
+      <div class="feature-list">
+        <div class="feature-row">
+          <i class="bi bi-chat-square-text"></i>
+          <div><h3>Describe it in plain English</h3><p>"Office leases in New York, 3–10 year terms, mixed tenant industries." LeaseSynth turns a sentence into a full generation configuration.</p></div>
+        </div>
+        <div class="feature-row">
+          <i class="bi bi-cpu"></i>
+          <div><h3>Thousands of records, in seconds</h3><p>A statistical generation engine — not a slow per-record AI call — produces consistent, realistic lease data at the scale your models need.</p></div>
+        </div>
+        <div class="feature-row">
+          <i class="bi bi-shield-check"></i>
+          <div><h3>Validated automatically</h3><p>Every record is checked for duplicate IDs, date logic, rent math, and status consistency, with a full error report — nothing is silently patched.</p></div>
+        </div>
+        <div class="feature-row">
+          <i class="bi bi-bar-chart-line"></i>
+          <div><h3>A dashboard that reacts to your data</h3><p>Eight charts and a KPI ledger update live from whatever you just generated — never placeholder numbers.</p></div>
+        </div>
+        <div class="feature-row">
+          <i class="bi bi-download"></i>
+          <div><h3>Export in one click</h3><p>Download the full dataset as CSV or JSON, plus a validation report and summary — ready for your own notebook or pipeline.</p></div>
+        </div>
+        <div class="feature-row">
+          <i class="bi bi-stars"></i>
+          <div><h3>Ask questions, get grounded answers</h3><p>"Which tenant industry occupies the most properties?" AI Insights answers from your dataset's real computed statistics — never invented figures.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="section-inner narrow">
+      <h2>How it works</h2>
+      <ol class="process-list">
+        <li><span class="process-num">1</span><div><h3>Describe your scenario</h3><p>Use the configuration form, or just describe what you need in a sentence.</p></div></li>
+        <li><span class="process-num">2</span><div><h3>AI structures the parameters</h3><p>Groq-hosted LLaMA converts your description into generation settings. Optional — manual configuration always works, with or without AI.</p></div></li>
+        <li><span class="process-num">3</span><div><h3>Generate</h3><p>Produce 100 to thousands of synthetic lease records in under a second.</p></div></li>
+        <li><span class="process-num">4</span><div><h3>Validate</h3><p>An automatic quality check scores the dataset and lists any issues found.</p></div></li>
+        <li><span class="process-num">5</span><div><h3>Analyze</h3><p>Explore KPIs and charts on the live dashboard.</p></div></li>
+        <li><span class="process-num">6</span><div><h3>Export</h3><p>Download CSV or JSON and bring the data into your own tools.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <footer class="landing-footer">
+    <div class="section-inner landing-footer-inner">
+      <span class="synthetic-pill"><i class="bi bi-shield-lock"></i> Every record is synthetic — no real tenants, properties, or agreements</span>
+      <a href="{{ url_for('generate_page') }}" class="btn btn-accent">Get Started</a>
+    </div>
+  </footer>
+
+</div>
+{% endblock %}

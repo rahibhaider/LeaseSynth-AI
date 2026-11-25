@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — LeaseSynth AI{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block topbar_actions %}
+<a href="{{ url_for('generate_page') }}" class="btn btn-accent btn-sm"><i class="bi bi-magic"></i> Generate Dataset</a>
+{% endblock %}
+
+{% block content %}
+
+<div id="emptyState" class="empty-state" hidden>
+  <i class="bi bi-bar-chart-line"></i>
+  <h2>No dataset yet</h2>
+  <p>Generate a synthetic lease dataset to see KPIs and analytics here.</p>
+  <a href="{{ url_for('generate_page') }}" class="btn btn-accent">Generate Dataset</a>
+</div>
+
+<div id="dashboardBody" hidden>
+
+  <div class="dashboard-dataset">
+    <h2>Latest generated dataset</h2>
+    <a href="{{ url_for('dataset_page') }}" class="btn btn-ghost btn-sm">View records</a>
+  </div>
+
+  <section class="kpi-ledger" id="kpiLedger" aria-label="Key metrics">
+    <div class="kpi-cell"><span class="kpi-label">Total leases</span><span class="kpi-value mono" id="kpiTotalLeases">—</span></div>
+    <div class="kpi-cell"><span class="kpi-label">Total properties</span><span class="kpi-value mono" id="kpiTotalProperties">—</span></div>
+    <div class="kpi-cell"><span class="kpi-label">Avg monthly rent</span><span class="kpi-value mono" id="kpiAvgMonthlyRent">—</span></div>
+    <div class="kpi-cell"><span class="kpi-label">Avg annual rent</span><span class="kpi-value mono" id="kpiAvgAnnualRent">—</span></div>
+    <div class="kpi-cell"><span class="kpi-label">Avg lease duration</span><span class="kpi-value mono" id="kpiAvgDuration">—</span></div>
+    <div class="kpi-cell"><span class="kpi-label">Avg rent / sqft</span><span class="kpi-value mono" id="kpiAvgRentSqft">—</span></div>
+    <div class="kpi-cell"><span class="kpi-label">Active leases</span><span class="kpi-value mono" id="kpiActive">—</span></div>
+    <div class="kpi-cell"><span class="kpi-label">Expired leases</span><span class="kpi-value mono" id="kpiExpired">—</span></div>
+  </section>
+
+  <div id="chartError" class="form-error" role="alert" hidden>Charts could not load. Refresh the dashboard to try again.</div>
+
+  <p id="chartHelp" class="chart-help" hidden>Hover for exact values, or click, tap, or use the selector to keep a value in view. Zoom in on horizontal charts, then drag or use the arrows to move across the scale.</p>
+
+  <section class="charts-grid" id="dashboardCharts">
+    <div class="chart-card span-6">
+      <h3>Lease count by property type</h3>
+      <div class="chart-wrap"><canvas id="chartPropertyType"></canvas></div>
+    </div>
+    <div class="chart-card span-6">
+      <h3>Average monthly rent by property type</h3>
+      <div class="chart-wrap"><canvas id="chartAvgRentByType"></canvas></div>
+    </div>
+    <div class="chart-card span-6">
+      <h3>Tenant industry distribution</h3>
+      <div class="chart-wrap"><canvas id="chartIndustryDoughnut"></canvas></div>
+    </div>
+    <div class="chart-card span-6">
+      <h3>Occupancy status distribution</h3>
+      <div class="chart-wrap"><canvas id="chartOccupancyPie"></canvas></div>
+    </div>
+    <div class="chart-card span-6">
+      <h3>Lease distribution by duration</h3>
+      <div class="chart-wrap"><canvas id="chartDurationBar"></canvas></div>
+    </div>
+    <div class="chart-card span-6">
+      <h3>Lease count by payment frequency</h3>
+      <div class="chart-wrap"><canvas id="chartPaymentFrequency"></canvas></div>
+    </div>
+    <div class="chart-card span-6">
+      <h3>Monthly rent distribution</h3>
+      <div class="chart-wrap"><canvas id="chartRentHistogram"></canvas></div>
+    </div>
+    <div class="chart-card span-6">
+      <h3>Highest average monthly rent by location (up to 12)</h3>
+      <div class="chart-wrap"><canvas id="chartLocationBar"></canvas></div>
+    </div>
+    <div class="chart-card span-12">
+      <h3>Lease commencements by quarter</h3>
+      <div class="chart-wrap"><canvas id="chartCommencementLine"></canvas></div>
+    </div>
+  </section>
+
+  <template id="chartInspectorTemplate">
+    <div class="chart-inspector">
+      <div>
+        <label>Data point</label>
+        <select></select>
+      </div>
+      <output class="chart-point-value">
+        <span class="chart-point-metric"></span>
+        <strong class="mono"></strong>
+      </output>
+    </div>
+  </template>
+
+  <template id="chartViewTemplate">
+    <div class="chart-view" role="group">
+      <button type="button" class="btn btn-ghost btn-sm" data-action="left" aria-label="Pan left" title="Pan left">&larr;</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="right" aria-label="Pan right" title="Pan right">&rarr;</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="in" aria-label="Zoom in" title="Zoom in">+</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="out" aria-label="Zoom out" title="Zoom out">&minus;</button>
+      <button type="button" class="btn btn-ghost btn-sm" data-action="reset">Reset view</button>
+    </div>
+  </template>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h3>Recent generations</h3>
+    </div>
+    <div class="table-scroll">
+      <table class="data-table" id="historyTable">
+        <thead>
+          <tr><th>Generated</th><th>Records</th><th>Quality</th><th>Property types</th><th>Locations</th></tr>
+        </thead>
+        <tbody id="historyTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+# Environment / secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Generated at runtime — not part of the source project
+generated_datasets/*.csv
+generated_datasets/*.json
+generated_datasets/*.txt
+data/*.db
+
+# Keep the folders themselves under version control
+!generated_datasets/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

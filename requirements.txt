@@ -1,0 +1,16 @@
+# LeaseSynth AI â€” Python dependencies
+# Tested with Python 3.12 against the exact versions below.
+# Install with: pip install -r requirements.txt
+
+Flask>=3.1.0
+pandas>=2.2.0
+numpy>=1.26.0
+Faker>=30.0.0
+python-dotenv>=1.0.0
+groq>=1.7.0
+python-dateutil>=2.9.0
+waitress>=3.0.0
+
+# Only needed if you plan to run the automated test suite (optional for
+# just running the app):
+pytest>=8.0.0
